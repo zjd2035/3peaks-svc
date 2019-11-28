@@ -1,20 +1,28 @@
 import jwt from 'jsonwebtoken';
 import { AuthenticationError, UserInputError } from 'apollo-server';
 import axios from 'axios';
+import 'dotenv/config';
 
 const createToken = async (user, secret, expiresIn) => {
   const { id, email } = user;
   return jwt.sign({ id, email }, secret, { expiresIn });
 };
 
-const isHuman = async (token) => axios.post('https://www.google.com/recaptcha/api/siteverify', {
-  response: token,
-  secret: process.env.RECAPTCHA_SECRET_KEY,
-}).then((response) => response.success);
+const isHuman = async (token) => {
+  if (process.env.TEST_DATABASE) {
+    return true;
+  }
+
+  return axios.post('https://www.google.com/recaptcha/api/siteverify', {
+    response: token,
+    secret: process.env.RECAPTCHA_SECRET_KEY,
+  }).then((response) => {
+    return response.success;
+  });
+};
 
 export default {
   Query: {
-    users: async (parent, args, { models }) => models.User.findAll(),
     currentUser: async (parent, args, { models, currentUser }) => {
       if (!currentUser) {
         return null;
@@ -25,7 +33,7 @@ export default {
   },
 
   Mutation: {
-    signUp: async (
+    register: async (
       parent,
       { email, password, recaptchaToken },
       { models, secret },
@@ -37,12 +45,13 @@ export default {
       const user = await models.User.create({
         email,
         password,
+        currentSpent: 0,
       });
 
       return { token: createToken(user, secret, '30m') };
     },
 
-    signIn: async (
+    login: async (
       parent,
       { email, password, recaptchaToken },
       { models, secret },

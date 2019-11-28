@@ -1,23 +1,11 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-  extend type Query {
-    users: [User!]
-    currentUser: User
-  }
-
-  extend type Mutation {
-    signUp(
-      email: String!
-      password: String!
-      recaptchaToken: String!
-    ): Token!
-
-    signIn(
-      email: String!
-      password: String!
-      recaptchaToken: String!
-    ): Token!
+  enum CycleUnit {
+    DAYS
+    WEEKS
+    MONTHS
+    YEARS
   }
 
   type Token {
@@ -27,5 +15,35 @@ export default gql`
   type User {
     id: ID!
     email: String!
+    budget: Float
+    currentSpent: Int!
+    budgetCycle: Int
+    budgetCycleUnit: CycleUnit
+    transactions: [Transaction!]!
+    categories: [Category!]!
+  }
+
+  extend type Query {
+    currentUser: User
+  }
+
+  extend type Mutation {
+    register(
+      email: String!
+      password: String!
+      recaptchaToken: String!
+    ): Token!
+
+    login(
+      email: String!
+      password: String!
+      recaptchaToken: String!
+    ): Token!
+
+    setBudget(
+      budget: Float!
+      budgetCycle: Int!
+      budgetCycleUnit: CycleUnit!
+    ): Boolean
   }
 `;

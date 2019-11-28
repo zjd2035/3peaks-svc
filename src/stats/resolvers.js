@@ -13,9 +13,7 @@ export default {
       if (!group) delete where.group;
       if (!segment) delete where.segment;
 
-      return models.Stat.findOne({
-        where,
-      });
+      return models.Stat.findOne({ where });
     },
   },
 
@@ -31,9 +29,7 @@ export default {
         if (!group) delete where.group;
         if (!segment) delete where.segment;
 
-        const stat = await models.Stat.findOne({
-          where,
-        });
+        const stat = await models.Stat.findOne({ where });
 
         if (stat) {
           stat.update({
@@ -62,9 +58,7 @@ export default {
         if (!group) delete where.group;
         if (!segment) delete where.segment;
 
-        const stat = await models.Stat.findOne({
-          where,
-        });
+        const stat = await models.Stat.findOne({ where });
 
         if (stat) {
           stat.update({

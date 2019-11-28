@@ -56,6 +56,7 @@ const createUsersWithMessages = async () => {
     {
       email: 'zdowns.3peaks@gmail.com',
       password: '12345678',
+      currentSpent: 0.00,
     },
   );
 };
