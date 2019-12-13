@@ -28,7 +28,7 @@ export default gql`
   }
 
   extend type Mutation {
-    register(
+    signUp(
       email: String!
       password: String!
       recaptchaToken: String!

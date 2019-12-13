@@ -33,7 +33,7 @@ export default {
   },
 
   Mutation: {
-    register: async (
+    signUp: async (
       parent,
       { email, password, recaptchaToken },
       { models, secret },
