@@ -1,6 +1,10 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+  ######################################################
+  # Custom Types
+  ######################################################
+
   type Category {
     id: ID!
     name: String!
@@ -9,21 +13,57 @@ export default gql`
     transactions: [Transaction!]!
   }
 
+  ######################################################
+  # Queries
+  ######################################################
+
   extend type Query {
     category(id: ID!): Category!
     categories: [Category!]!
   }
 
+  ######################################################
+  # Mutation Inputs
+  ######################################################
+
+  input CreateCategoryInput {
+    name: String!
+  }
+
+  input UpdateCategoryInput {
+    id: ID!
+    name: String!
+  }
+
+  input DeleteCategoryInput {
+    id: ID!
+  }
+
+  ######################################################
+  # Mutation Payloads
+  ######################################################
+
+  type CreateCategoryPayload {
+    category: Category
+  }
+
+  type UpdateCategoryPayload {
+    category: Category
+  }
+
+  type DeleteCategoryPayload {
+    id: ID
+  }
+
+  ######################################################
+  # Mutations
+  ######################################################
+
   extend type Mutation {
-    createCategory(
-      name: String!
-    ): Category
+    createCategory(input: CreateCategoryInput!): CreateCategoryPayload!
 
-    updateCategory(
-      id: ID!
-      name: String!
-    ): Category
+    updateCategory(input: UpdateCategoryInput!): UpdateCategoryPayload!
 
-    deleteCategory(id: ID!): Boolean!
+    deleteCategory(input: DeleteCategoryInput!): DeleteCategoryPayload!
   }
 `;

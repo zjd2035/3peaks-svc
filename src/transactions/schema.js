@@ -1,6 +1,10 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+  ######################################################
+  # Custom Types
+  ######################################################
+
   type Transaction {
     id: ID!
     amount: Float!
@@ -12,23 +16,59 @@ export default gql`
     updatedAt: Date!
   }
 
+  ######################################################
+  # Queries
+  ######################################################
+
   extend type Query {
     transaction(id: ID!): Transaction!
     transactions: [Transaction!]!
   }
 
+  ######################################################
+  # Mutation Inputs
+  ######################################################
+
+  input CreateTransactionInput {
+    categoryId: ID
+    amount: Float!
+  }
+
+  input UpdateTransactionInput {
+    id: ID!
+    amount: Float
+    categoryId: ID
+  }
+
+  input DeleteTransactionInput {
+    id: ID!
+  }
+
+  ######################################################
+  # Mutation Payloads
+  ######################################################
+
+  type CreateTransactionPayload {
+    transaction: Transaction
+  }
+
+  type UpdateTransactionPayload {
+    transaction: Transaction
+  }
+
+  type DeleteTransactionPayload {
+    id: ID
+  }
+
+  ######################################################
+  # Mutations
+  ######################################################
+
   extend type Mutation {
-    createTransaction(
-      amount: Float!
-      categoryId: ID
-    ): Transaction
+    createTransaction(input: CreateTransactionInput!): CreateTransactionPayload!
 
-    updateTransaction(
-      id: ID!
-      amount: Float
-      categoryId: ID
-    ): Transaction
+    updateTransaction(input: UpdateTransactionInput!): UpdateTransactionPayload!
 
-    deleteTransaction(id: ID!): Boolean!
+    deleteTransaction(input: DeleteTransactionInput!): DeleteTransactionPayload!
   }
 `;

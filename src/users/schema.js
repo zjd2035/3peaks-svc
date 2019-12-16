@@ -1,6 +1,10 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
+  ######################################################
+  # Custom Types
+  ######################################################
+
   enum CycleUnit {
     DAYS
     WEEKS
@@ -23,27 +27,61 @@ export default gql`
     categories: [Category!]!
   }
 
+  ######################################################
+  # Queries
+  ######################################################
+
   extend type Query {
     currentUser: User
   }
 
+  ######################################################
+  # Mutation Inputs
+  ######################################################
+
+  input SignUpInput {
+    email: String!
+    password: String!
+    recaptchaToken: String!
+  }
+
+  input LoginInput {
+    email: String!
+    password: String!
+    recaptchaToken: String!
+  }
+
+  input SetBudgetInput {
+    budget: Float!
+    budgetCycle: Int!
+    budgetCycleUnit: CycleUnit!
+  }
+
+  ######################################################
+  # Mutation Payloads
+  ######################################################
+
+  type SignUpPayload {
+    token: Token
+  }
+
+  type LoginPayload {
+    token: Token
+  }
+
+  type SetBudgetPayload {
+    user: User
+  }
+
+  ######################################################
+  # Mutations
+  ######################################################
+
   extend type Mutation {
-    signUp(
-      email: String!
-      password: String!
-      recaptchaToken: String!
-    ): Token!
+    signUp(input: SignUpInput!): SignUpPayload!
 
-    login(
-      email: String!
-      password: String!
-      recaptchaToken: String!
-    ): Token!
+    login(input: LoginInput!): LoginPayload!
 
-    setBudget(
-      budget: Float!
-      budgetCycle: Int!
-      budgetCycleUnit: CycleUnit!
-    ): Boolean
+    setBudget(input: SetBudgetInput!): SetBudgetPayload!
   }
 `;
