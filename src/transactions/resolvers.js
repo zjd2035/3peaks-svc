@@ -34,11 +34,9 @@ export default {
   },
 
   Mutation: {
-    createTransaction: async (
-      parent,
-      { amount, categoryId },
-      { models, currentUser },
-    ) => {
+    createTransaction: async (parent, { input }, { models, currentUser }) => {
+      const { amount, categoryId } = input;
+
       if (!currentUser) {
         return null;
       }
@@ -55,11 +53,9 @@ export default {
       });
     },
 
-    updateTransaction: async (
-      parent,
-      { id, amount, categoryId },
-      { models, currentUser },
-    ) => {
+    updateTransaction: async (parent, { input }, { models, currentUser }) => {
+      const { id, amount, categoryId } = input;
+
       if (!currentUser) {
         return null;
       }
@@ -83,12 +79,12 @@ export default {
       });
     },
 
-    deleteTransaction: async (parent, { id }, { models, currentUser }) => {
+    deleteTransaction: async (parent, { input }, { models, currentUser }) => {
       if (!currentUser) {
         return null;
       }
 
-      const where = { id };
+      const where = { id: input.id };
 
       return models.Transaction.destroy({ where });
     },

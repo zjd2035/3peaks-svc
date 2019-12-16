@@ -13,7 +13,7 @@ export default gql`
   }
 
   type Token {
-    token: String!
+    value: String!
   }
 
   type User {

@@ -38,13 +38,13 @@ export default {
   },
 
   Mutation: {
-    createCategory: async (parent, { name }, { models, currentUser }) => {
+    createCategory: async (parent, { input }, { models, currentUser }) => {
       if (!currentUser) {
         return null;
       }
 
       return models.Category.create({
-        name,
+        name: input.name,
         userId: currentUser.id,
       }, {
         include: [
@@ -53,7 +53,9 @@ export default {
       });
     },
 
-    updateCategory: async (parent, { id, name }, { models, currentUser }) => {
+    updateCategory: async (parent, { input }, { models, currentUser }) => {
+      const { id, name } = input;
+
       if (!currentUser) {
         return null;
       }
@@ -65,12 +67,12 @@ export default {
       });
     },
 
-    deleteCategory: async (parent, { id }, { models, currentUser }) => {
+    deleteCategory: async (parent, { input }, { models, currentUser }) => {
       if (!currentUser) {
         return null;
       }
 
-      const where = { id };
+      const where = { id: input.id };
 
       return models.Category.destroy({ where });
     },

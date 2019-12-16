@@ -18,7 +18,9 @@ export default {
   },
 
   Mutation: {
-    incrementStat: async (parent, { type, group, segment }, { models }) => {
+    incrementStat: async (parent, { input }, { models }) => {
+      const { type, group, segment } = input;
+
       try {
         const where = {
           type,
@@ -47,7 +49,9 @@ export default {
         throw new Error(error);
       }
     },
-    decrementStat: async (parent, { type, group, segment }, { models }) => {
+    decrementStat: async (parent, { input }, { models }) => {
+      const { type, group, segment } = input;
+
       try {
         const where = {
           type,

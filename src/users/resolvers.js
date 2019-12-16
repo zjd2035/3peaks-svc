@@ -33,11 +33,9 @@ export default {
   },
 
   Mutation: {
-    signUp: async (
-      parent,
-      { email, password, recaptchaToken },
-      { models, secret },
-    ) => {
+    signUp: async (parent, { input }, { models, secret }) => {
+      const { email, password, recaptchaToken } = input;
+
       if (!isHuman(recaptchaToken)) {
         throw new AuthenticationError('reCaptcha failed');
       }
@@ -48,14 +46,12 @@ export default {
         currentSpent: 0,
       });
 
-      return { token: createToken(user, secret, '30m') };
+      return { token: { value: createToken(user, secret, '30m') } };
     },
 
-    login: async (
-      parent,
-      { email, password, recaptchaToken },
-      { models, secret },
-    ) => {
+    login: async (parent, { input }, { models, secret }) => {
+      const { email, password, recaptchaToken } = input;
+
       if (!isHuman(recaptchaToken)) {
         throw new AuthenticationError('reCaptcha failed');
       }
@@ -76,7 +72,7 @@ export default {
         );
       }
 
-      return { token: createToken(user, secret, '30m') };
+      return { token: { value: createToken(user, secret, '30m') } };
     },
   },
 };
