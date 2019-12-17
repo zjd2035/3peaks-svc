@@ -41,16 +41,18 @@ export default {
         return null;
       }
 
-      return models.Transaction.create({
-        amount,
-        userId: currentUser.id,
-        categoryId,
-      }, {
-        include: [
-          models.Category,
-          models.User,
-        ],
-      });
+      return {
+        transaction: models.Transaction.create({
+          amount,
+          userId: currentUser.id,
+          categoryId,
+        }, {
+          include: [
+            models.Category,
+            models.User,
+          ],
+        }),
+      };
     },
 
     updateTransaction: async (parent, { input }, { models, currentUser }) => {
@@ -72,11 +74,13 @@ export default {
         update.amount = amount;
       }
 
-      return models.Transaction.findByPk(id).then((transaction) => {
-        return transaction.update(update).then((self) => {
+      const transaction = models.Transaction.findByPk(id).then((result) => {
+        return result.update(update).then((self) => {
           return self.dataValues;
         });
       });
+
+      return { transaction };
     },
 
     deleteTransaction: async (parent, { input }, { models, currentUser }) => {
@@ -86,7 +90,13 @@ export default {
 
       const where = { id: input.id };
 
-      return models.Transaction.destroy({ where });
+      const id = models.Transaction.findOne({ where }).then((result) => {
+        return models.Transaction.destroy({ where }).then(() => {
+          return result.id;
+        });
+      });
+
+      return { id };
     },
   },
 };

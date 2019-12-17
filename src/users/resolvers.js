@@ -74,5 +74,19 @@ export default {
 
       return { token: { value: createToken(user, secret, '30m') } };
     },
+
+    setBudget: async (parent, { input }, { models, currentUser }) => {
+      if (!currentUser) {
+        return { user: null };
+      }
+
+      const user = models.User.findByEmail(currentUser.email).then((result) => {
+        return result.update(input).then((self) => {
+          return self.dataValues;
+        });
+      });
+
+      return { user };
+    },
   },
 };

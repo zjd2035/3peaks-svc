@@ -44,7 +44,7 @@ export default {
           });
         }
 
-        return stat;
+        return { stat };
       } catch (error) {
         throw new Error(error);
       }
@@ -70,7 +70,7 @@ export default {
           });
         }
 
-        return stat;
+        return { stat };
       } catch (error) {
         throw new Error(error);
       }

@@ -17,14 +17,14 @@ export default gql`
   }
 
   type User {
-    id: ID!
-    email: String!
+    id: ID
+    email: String
     budget: Float
-    currentSpent: Int!
+    currentSpent: Int
     budgetCycle: Int
     budgetCycleUnit: CycleUnit
-    transactions: [Transaction!]!
-    categories: [Category!]!
+    transactions: [Transaction!]
+    categories: [Category!]
   }
 
   ######################################################

@@ -40,10 +40,10 @@ export default {
   Mutation: {
     createCategory: async (parent, { input }, { models, currentUser }) => {
       if (!currentUser) {
-        return null;
+        return { category: null };
       }
 
-      return models.Category.create({
+      const category = models.Category.create({
         name: input.name,
         userId: currentUser.id,
       }, {
@@ -51,6 +51,8 @@ export default {
           models.User,
         ],
       });
+
+      return { category };
     },
 
     updateCategory: async (parent, { input }, { models, currentUser }) => {
@@ -60,11 +62,13 @@ export default {
         return null;
       }
 
-      return models.Category.findByPk(id).then((category) => {
-        return category.update({ name }).then((self) => {
+      const category = models.Category.findByPk(id).then((result) => {
+        return result.update({ name }).then((self) => {
           return self.dataValues;
         });
       });
+
+      return { category };
     },
 
     deleteCategory: async (parent, { input }, { models, currentUser }) => {
@@ -74,7 +78,13 @@ export default {
 
       const where = { id: input.id };
 
-      return models.Category.destroy({ where });
+      const id = models.Category.findOne({ where }).then((result) => {
+        return models.Category.destroy({ where }).then(() => {
+          return result.id;
+        });
+      });
+
+      return { id };
     },
   },
 };
