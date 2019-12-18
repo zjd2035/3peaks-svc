@@ -8,9 +8,7 @@ export default gql`
   type Transaction {
     id: ID!
     amount: Float!
-    userId: ID!
     user: User!
-    categoryId: ID!
     category: Category!
     createdAt: Date!
     updatedAt: Date!
@@ -30,8 +28,8 @@ export default gql`
   ######################################################
 
   input CreateTransactionInput {
-    categoryId: ID
     amount: Float!
+    categoryId: ID
   }
 
   input UpdateTransactionInput {

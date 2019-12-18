@@ -22,6 +22,24 @@ const isHuman = async (token) => {
 };
 
 export default {
+  User: {
+    transactions: (user, args, { models }) => {
+      const where = {
+        userId: user.id,
+      };
+
+      return models.Transaction.findAll({ where });
+    },
+
+    categories: (user, args, { models }) => {
+      const where = {
+        userId: user.id,
+      };
+
+      return models.Category.findAll({ where });
+    },
+  },
+
   Query: {
     currentUser: async (parent, args, { models, currentUser }) => {
       if (!currentUser) {

@@ -2,7 +2,7 @@ export default {
   Category: {
     transactions: (category, args, { models }) => {
       const where = {
-        transactionId: category.transactionId,
+        categoryId: category.id,
       };
 
       return models.Transaction.findAll({ where });

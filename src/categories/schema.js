@@ -8,9 +8,10 @@ export default gql`
   type Category {
     id: ID!
     name: String!
-    userId: ID!
     user: User!
     transactions: [Transaction!]!
+    createdAt: Date!
+    updatedAt: Date!
   }
 
   ######################################################
