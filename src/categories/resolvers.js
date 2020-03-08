@@ -1,3 +1,5 @@
+import { ForbiddenError } from 'apollo-server';
+
 export default {
   Category: {
     transactions: (category, args, { models }) => {
@@ -9,6 +11,9 @@ export default {
     },
     user: async (category, args, { models }) => {
       return models.User.findByPk(category.userId);
+    },
+    budget: async (category, args, { models }) => {
+      return models.Budget.findByPk(category.budgetId);
     },
   },
 
@@ -56,10 +61,14 @@ export default {
     },
 
     updateCategory: async (parent, { input }, { models, currentUser }) => {
-      const { id, name } = input;
+      const { id, name, userId } = input;
 
       if (!currentUser) {
         return null;
+      }
+
+      if (currentUser.id !== userId) {
+        throw new ForbiddenError('User not permitted to update this category.');
       }
 
       const category = models.Category.findByPk(id).then((result) => {
@@ -72,19 +81,25 @@ export default {
     },
 
     deleteCategory: async (parent, { input }, { models, currentUser }) => {
+      const { id, userId } = input;
+
       if (!currentUser) {
         return null;
       }
 
-      const where = { id: input.id };
+      if (currentUser.id !== userId) {
+        throw new ForbiddenError('User not permitted to delete this category.');
+      }
 
-      const id = models.Category.findOne({ where }).then((result) => {
+      const where = { id };
+
+      const deletedId = models.Category.findOne({ where }).then((result) => {
         return models.Category.destroy({ where }).then(() => {
           return result.id;
         });
       });
 
-      return { id };
+      return { id: deletedId };
     },
   },
 };

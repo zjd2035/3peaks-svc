@@ -9,6 +9,7 @@ export default gql`
     id: ID!
     name: String!
     user: User!
+    budget: Budget
     transactions: [Transaction!]!
     createdAt: Date!
     updatedAt: Date!
@@ -34,10 +35,12 @@ export default gql`
   input UpdateCategoryInput {
     id: ID!
     name: String!
+    userId: ID!
   }
 
   input DeleteCategoryInput {
     id: ID!
+    userId: ID!
   }
 
   ######################################################

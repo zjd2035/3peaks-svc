@@ -4,19 +4,22 @@ export default gql`
   ######################################################
   # Custom Types
   ######################################################
-  type Token {
-    value: String!
+  enum CycleUnit {
+    DAYS
+    WEEKS
+    MONTHS
+    YEARS
   }
 
-  type User {
+  type Budget {
     id: ID
-    email: String
-    name: String!
-    budget: [Budget!]
-    isPremium: Boolean
-    premiumDate: Date
-    transactions: [Transaction!]
-    categories: [Category!]
+    budget: Float!
+    currentSpent: Float
+    budgetCycle: Int!
+    budgetCycleUnit: CycleUnit!
+    startDate: Date!
+    user: User!
+    category: Category
   }
 
   ######################################################
@@ -24,35 +27,42 @@ export default gql`
   ######################################################
 
   extend type Query {
-    currentUser: User
+    budget(id: ID!): Budget!
   }
 
   ######################################################
   # Mutation Inputs
   ######################################################
 
-  input SignUpInput {
-    email: String!
-    password: String!
-    recaptchaToken: String!
+
+  input CreateBudgetInput {
+    budget: Float!
+    budgetCycle: Int!
+    budgetCycleUnit: CycleUnit!
+    startDate: Date!
+    categoryId: ID
+    userId: ID!
   }
 
-  input LoginInput {
-    email: String!
-    password: String!
-    recaptchaToken: String!
+  input UpdateBudgetInput {
+    id: ID!
+    budget: Float
+    budgetCycle: Int
+    budgetCycleUnit: CycleUnit
+    startDate: Date
+    userId: ID!
   }
 
   ######################################################
   # Mutation Payloads
   ######################################################
 
-  type SignUpPayload {
-    token: Token
+  type CreateBudgetPayload {
+    budget: Budget!
   }
 
-  type LoginPayload {
-    token: Token
+  type UpdateBudgetPayload {
+    budget: Budget!
   }
 
   ######################################################
@@ -60,8 +70,7 @@ export default gql`
   ######################################################
 
   extend type Mutation {
-    signUp(input: SignUpInput!): SignUpPayload!
-
-    login(input: LoginInput!): LoginPayload!
+    updateBudget(input: UpdateBudgetInput!): UpdateBudgetPayload!
+    createBudget(input: CreateBudgetInput!): CreateBudgetPayload!
   }
 `;

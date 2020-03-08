@@ -1,7 +1,14 @@
 import bcrypt from 'bcrypt';
+import uuidv4 from 'uuid/v4';
+import Sequelize from 'sequelize';
 
 const user = (sequelize, DataTypes) => {
   const User = sequelize.define('user', {
+    id: {
+      primaryKey: true,
+      type: Sequelize.UUID,
+      defaultValue: uuidv4(),
+    },
     email: {
       type: DataTypes.STRING,
       unique: {
@@ -23,20 +30,16 @@ const user = (sequelize, DataTypes) => {
         len: [8, 42],
       },
     },
-    budget: {
-      type: DataTypes.DECIMAL(15, 6),
-      allowNull: true,
-    },
-    currentSpent: {
-      type: DataTypes.DECIMAL(15, 6),
+    name: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    budgetCycle: {
-      type: DataTypes.INTEGER,
+    isPremium: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
-    budgetCycleUnit: {
-      type: DataTypes.ENUM('DAYS', 'WEEKS', 'MONTHS', 'YEARS'),
+    premiumDate: {
+      type: DataTypes.DATE,
       allowNull: true,
     },
   }, {
@@ -68,6 +71,7 @@ const user = (sequelize, DataTypes) => {
   User.associate = (models) => {
     User.hasMany(models.Category, { onDelete: 'CASCADE' });
     User.hasMany(models.Transaction, { onDelete: 'CASCADE' });
+    User.hasMany(models.Budget, { onDelete: 'CASCADE' });
   };
 
   return User;

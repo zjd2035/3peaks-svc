@@ -51,19 +51,30 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app, path: '/graphql' });
 
-const createUsersWithMessages = async () => {
-  await models.User.create(
-    {
-      email: 'zdowns.3peaks@gmail.com',
-      password: '12345678',
-      currentSpent: 0.00,
-    },
-  );
+const createUserWithBudget = async () => {
+  const testUser = await models.User.create({
+    name: 'Zack D',
+    email: 'zdowns.3peaks@gmail.com',
+    password: '12345678',
+  });
+
+  await models.Budget.create({
+    budget: 0.00,
+    currentSpent: 0.00,
+    budgetCycle: 2,
+    budgetCycleUnit: 'WEEKS',
+    startDate: new Date(),
+    userId: testUser.id,
+  }, {
+    include: [
+      models.User,
+    ],
+  });
 };
 
 sequelize.sync({ force: isTest }).then(async () => {
   if (isTest) {
-    createUsersWithMessages();
+    createUserWithBudget();
   }
 
   app.listen({ port }, () => {

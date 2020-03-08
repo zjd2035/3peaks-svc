@@ -38,6 +38,13 @@ export default {
 
       return models.Category.findAll({ where });
     },
+    budget: async (user, args, { models }) => {
+      const where = {
+        userId: user.id,
+      };
+
+      return models.Budget.findAll({ where });
+    },
   },
 
   Query: {
@@ -52,16 +59,34 @@ export default {
 
   Mutation: {
     signUp: async (parent, { input }, { models, secret }) => {
-      const { email, password, recaptchaToken } = input;
+      const {
+        name,
+        email,
+        password,
+        recaptchaToken,
+      } = input;
 
       if (!isHuman(recaptchaToken)) {
         throw new AuthenticationError('reCaptcha failed');
       }
 
       const user = await models.User.create({
+        name,
         email,
         password,
-        currentSpent: 0,
+      });
+
+      await models.Budget.create({
+        budget: 0.00,
+        currentSpent: 0.00,
+        budgetCycle: 2,
+        budgetCycleUnit: 'WEEKS',
+        startDate: new Date(),
+        userId: user.id,
+      }, {
+        include: [
+          models.User,
+        ],
       });
 
       return { token: { value: createToken(user, secret, '30m') } };
@@ -91,20 +116,6 @@ export default {
       }
 
       return { token: { value: createToken(user, secret, '30m') } };
-    },
-
-    setBudget: async (parent, { input }, { models, currentUser }) => {
-      if (!currentUser) {
-        return { user: null };
-      }
-
-      const user = models.User.findByEmail(currentUser.email).then((result) => {
-        return result.update(input).then((self) => {
-          return self.dataValues;
-        });
-      });
-
-      return { user };
     },
   },
 };

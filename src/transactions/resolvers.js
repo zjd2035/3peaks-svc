@@ -1,3 +1,5 @@
+import { ForbiddenError } from 'apollo-server';
+
 export default {
   Transaction: {
     category: (transaction, args, { models }) => {
@@ -56,22 +58,32 @@ export default {
     },
 
     updateTransaction: async (parent, { input }, { models, currentUser }) => {
-      const { id, amount, categoryId } = input;
+      const {
+        id,
+        amount,
+        categoryId,
+        userId,
+      } = input;
 
       if (!currentUser) {
         return null;
+      }
+
+      if (currentUser.id !== userId) {
+        throw new ForbiddenError('User not permitted to update this transaction.');
       }
 
       if (!categoryId && !amount) {
         return null;
       }
 
-      const update = {};
-      if (categoryId) {
-        update.categoryId = categoryId;
+      const update = { ...input };
+      delete update.id;
+      if (!categoryId) {
+        delete update.categoryId;
       }
-      if (amount) {
-        update.amount = amount;
+      if (!amount) {
+        delete update.amount;
       }
 
       const transaction = models.Transaction.findByPk(id).then((result) => {
@@ -84,19 +96,25 @@ export default {
     },
 
     deleteTransaction: async (parent, { input }, { models, currentUser }) => {
+      const { id, userId } = input;
+
       if (!currentUser) {
         return null;
       }
 
-      const where = { id: input.id };
+      if (currentUser.id !== userId) {
+        throw new ForbiddenError('User not permitted to delete this transaction.');
+      }
 
-      const id = models.Transaction.findOne({ where }).then((result) => {
+      const where = { id };
+
+      const deletedId = models.Transaction.findOne({ where }).then((result) => {
         return models.Transaction.destroy({ where }).then(() => {
           return result.id;
         });
       });
 
-      return { id };
+      return { deletedId };
     },
   },
 };

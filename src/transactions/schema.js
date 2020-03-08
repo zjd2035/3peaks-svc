@@ -36,10 +36,12 @@ export default gql`
     id: ID!
     amount: Float
     categoryId: ID
+    userId: ID!
   }
 
   input DeleteTransactionInput {
     id: ID!
+    userId: ID!
   }
 
   ######################################################

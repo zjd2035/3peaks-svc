@@ -6,6 +6,7 @@ import userSchema from './users/schema';
 import statSchema from './stats/schema';
 import transactionSchema from './transactions/schema';
 import categorySchema from './categories/schema';
+import budgetSchema from './budgets/schema';
 
 
 const linkSchema = gql`
@@ -29,4 +30,5 @@ export default [
   statSchema,
   transactionSchema,
   categorySchema,
+  budgetSchema,
 ];

@@ -25,6 +25,7 @@ const models = {
   Stat: sequelize.import('./stats/models'),
   Transaction: sequelize.import('./transactions/models'),
   Category: sequelize.import('./categories/models'),
+  Budget: sequelize.import('./budgets/models'),
 };
 
 Object.keys(models).forEach((key) => {
