@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/zjd2035/3peaks-svc#readme",
   "dependencies": {
-    "apollo-server": "^2.9.2",
+    "apollo-server": "^2.25.3",
     "apollo-server-express": "^2.9.2",
     "axios": "^0.19.0",
     "bcrypt": "^3.0.6",
